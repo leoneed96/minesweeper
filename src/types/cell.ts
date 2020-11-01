@@ -20,4 +20,5 @@ export default class cell {
   position: position;
   public type!: CellType;
   public number!: number | undefined;
+  public isOpened: boolean = false;
 }

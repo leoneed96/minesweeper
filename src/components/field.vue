@@ -1,13 +1,13 @@
 <template>
   <div class="field-container">
     <b-container :style="containerStyle">
-      <b-row class="ml-auto mr-auto" :style="rowStyle" v-for="(row, index) in data" :key="index" :cols="row.length">
+      <b-row class="ml-auto mr-auto" :style="rowStyle" v-for="(row, rowIndex) in data" :key="rowIndex" :cols="row.length">
         <b-col
           class="pl-0 pr-0 flex-grow-0 flex-shrink-1"
-          v-for="(col, index) in row"
-          :key="index"
+          v-for="(col, colIndex) in row"
+          :key="colIndex"
         >
-          <cell :size="cellSize"></cell>
+          <cell @input="onCellInput" :size="cellSize" :cell="data[rowIndex][colIndex]"></cell>
         </b-col>
       </b-row>
     </b-container>
@@ -15,6 +15,7 @@
 </template>
 <script>
 import cell from "./cell";
+import InputProcessor from "../types/inputProcessor"
 export default {
   components: {
     cell,
@@ -38,11 +39,11 @@ export default {
   },
   data: function() {
    return {
-
+     processor: null,
    }
   },
   mounted() {
-    
+   this.processor = new InputProcessor(this.data); 
   },
   computed: {
       rowStyle(){
@@ -55,6 +56,15 @@ export default {
               height: '40rem'
           }
       }
+  },
+  methods:{
+    onCellInput(cell){
+      console.log(this.processor);
+      this.processor.processInput(cell.position);
+    },
+    getCell(row, col){
+      return this.data && this.data[row] && this.data[row][col];
+    }
   }
 };
 </script>

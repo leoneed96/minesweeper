@@ -36,7 +36,6 @@ export default class Generator {
       for (let col = 0; col < this.colCount; col++) {
         let curCell = new cell(new position(row, col));
         if (mines.some((x) => x.row == row && x.col == col)) {
-          debugger;
           curCell.type = CellType.mine;
         }
         this.flatField.push(curCell);

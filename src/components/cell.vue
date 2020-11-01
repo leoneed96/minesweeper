@@ -1,12 +1,14 @@
 <template>
-    <div :style="style" class="cell">
-        1
+    <div :style="style" class="cell cursor-pointer" @click="onCellClick">
+        <div v-if="!cell.isOpened">?</div>
+        <div v-else-if="cell.type == 0">*</div>
+        <div v-else>{{cell.number || 'i'}}</div>
     </div>
 </template>
 <script>
 export default {
     props:{
-        data:{
+        cell:{
             type: Object,
             default: () => {}
         },
@@ -23,7 +25,13 @@ export default {
                 height: size
             };
         }
+    },
+    methods: {
+        onCellClick(){
+            this.$emit("input", this.cell);
+        }
     }
+
 }
 </script>
 <style scoped>

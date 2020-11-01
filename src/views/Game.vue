@@ -36,8 +36,7 @@ export default {
       }
   },
   mounted() {
-    let generator = new Generator(20, 20);
-    let field = generator.getField();
+
   },
 };
 </script>
