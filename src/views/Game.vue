@@ -5,7 +5,7 @@
     <field v-if="started" :data="gameField"
     :rowsCount="20"
     :colsCount="20"
-    :cellSize="1"
+    :cellSize="2"
     ></field>
   </b-container>
 </template>

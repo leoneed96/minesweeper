@@ -1,6 +1,7 @@
 import cell from "./cell";
 import { position } from "./cell";
 import { CellType } from "./cell";
+import utils from "./utils";
 export default class Generator {
   constructor(
     rowCount: number,
@@ -19,6 +20,7 @@ export default class Generator {
   colCount: number;
   minesCount: number;
   defaultMinesCoeff: number = 0.15625;
+  private utils: utils = new utils(); 
   private field: Array<Array<cell>> = new Array<Array<cell>>();
   private flatField: Array<cell> = new Array<cell>();
 
@@ -76,19 +78,7 @@ export default class Generator {
     });
   }
   private getNeighbors(row: number, col: number) {
-    let predicate = function(cell: cell) {
-      //row + 1
-      let condition1 =
-        cell.position.row == row + 1 && Math.abs(col - cell.position.col) <= 1;
-      // row - 1
-      let condition2 =
-        cell.position.row == row - 1 && Math.abs(col - cell.position.col) <= 1;
-      // same row
-      let condition3 =
-        cell.position.row == row && Math.abs(col - cell.position.col) == 1;
-      return condition1 || condition2 || condition3;
-    };
-    return this.flatField.filter((x) => predicate(x));
+    return this.flatField.filter(this.utils.getNeighborsPredicate(row, col));
   }
   private getMinesPositions(): Array<position> {
     let result = new Array<position>();
