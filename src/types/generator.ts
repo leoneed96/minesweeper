@@ -32,6 +32,26 @@ export default class Generator {
 
     return this.field;
   }
+  // todo: standalone 'fakeGenerator' ?
+  public getFakeField(){
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
+        let curCell = new cell(new position(row, col));
+        curCell.type = CellType.fake;
+        this.flatField.push(curCell);
+      }
+    }
+    for (let row = 0; row < this.rowCount; row++) {
+      this.field.push([]);
+      for (let col = 0; col < this.colCount; col++) {
+        let cell = this.flatField.filter(
+          (x) => x.position.col == col && x.position.row == row
+        )[0];
+        this.field[row].push(cell);
+      }
+    }
+    return this.field;
+  }
   private initFlatFieldWithMines() {
     let mines = this.getMinesPositions();
     for (let row = 0; row < this.rowCount; row++) {

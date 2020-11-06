@@ -5,35 +5,46 @@ export default class InputProcessor {
     constructor(gameField: Array<Array<cell>>) {
         let helper = new Utils();
         this.flatField = helper.getFlatArray(gameField);
+        this.updateMinesCount();
     }
     flatField: Array<cell>;
     private utils: Utils = new Utils();
-    public processInput(pos: position) {
+    public minesCount: number = 999;
+    public processInput(pos: position, updateOnly: boolean = false) {
+        if (updateOnly) {
+            this.updateMinesCount();
+            return;
+        }
         let cell = this.flatField.find(x => x.position.col == pos.col && x.position.row == pos.row);
         if (cell) {
             cell.isOpened = true;
+            cell.isFlag = false;
+
             if (cell.type == CellType.mine)
                 return false;
-            if(cell.type == CellType.number)
+            if (cell.type == CellType.number)
                 return true;
-            if(cell.type == CellType.island)
-                this.openIsland(pos); 
+            if (cell.type == CellType.island)
+                this.openIsland(pos);
         }
-        // TODO: if island - pick start point then go around and open while you got island or number. Stop moving after 
-        // you saw a number. 
-    }
+        this.updateMinesCount();
 
-    private openIsland(pos: position) 
-    {
+    }
+    private updateMinesCount() {
+        this.minesCount = this.flatField.filter(
+            (x) => x.type == CellType.mine
+        ).length - this.flatField.filter((x) => x.isFlag).length;
+    }
+    private openIsland(pos: position) {
         var that = this;
         let toOpen = new Array<cell>();
 
-        function getChainedCells(pos:position) {
+        function getChainedCells(pos: position) {
             let neighborsPredicate = that.utils.getNeighborsPredicate(pos.row, pos.col);
-            let closedIslandsOrNumbersPredicate = (cell: cell) => 
+            let closedIslandsOrNumbersPredicate = (cell: cell) =>
                 !cell.isOpened && (cell.type == CellType.island || cell.type == CellType.number);
 
-            let first = that.flatField.filter(x => 
+            let first = that.flatField.filter(x =>
                 toOpen.indexOf(x) == -1);
             let second = first.filter(neighborsPredicate);
             let third = second.filter(closedIslandsOrNumbersPredicate);
@@ -43,8 +54,9 @@ export default class InputProcessor {
 
         for (let i = 0; i < toOpen.length; i++) {
             const cell = toOpen[i];
+            cell.isFlag = false;
             cell.isOpened = true;
-            if(cell.type == CellType.island)
+            if (cell.type == CellType.island)
                 toOpen.push(...getChainedCells(cell.position));
         }
     }

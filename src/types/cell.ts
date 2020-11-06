@@ -11,6 +11,7 @@ export enum CellType {
   mine,
   island,
   number,
+  fake
 }
 
 export default class cell {
@@ -21,4 +22,5 @@ export default class cell {
   public type!: CellType;
   public number!: number | undefined;
   public isOpened: boolean = false;
+  public isFlag: boolean = false;
 }

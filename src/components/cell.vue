@@ -59,7 +59,7 @@ export default {
         "border-width": this.size / 8 + "rem",
         "font-size": this.size / 1.5 + "rem",
       };
-      if (this.isFlag)
+      if (this.cell.isFlag)
         style["background-image"] = `url(${require("@/assets/flag.png")})`;
       return style;
     },
@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     onCellClick() {
-      if (!this.isFlag) this.$emit("input", this.cell);
+      if (!this.cell.isFlag) this.$emit("input", this.cell);
     },
     getNumClass(cell) {
       if (cell.type == 2) return `cell-content--num--${cell.number}`;
@@ -79,7 +79,8 @@ export default {
     processFlag(e) {
       e.preventDefault();
       if (this.cell.isOpened) return;
-      this.isFlag = !this.isFlag;
+      this.cell.isFlag = !this.cell.isFlag;
+      this.$emit("input", this.cell, true);
     },
   },
 };

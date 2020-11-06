@@ -32,12 +32,14 @@
 <script>
 import "../styles/field.scss";
 import cell from "./cell";
+import statusBar from "../components/statusBar";
 import InputProcessor from "../types/inputProcessor";
 import { dragscroll } from "vue-dragscroll";
 import DragScrollClickFix from "../js/DragScrollClickFix";
 export default {
   components: {
     cell,
+    statusBar,
   },
   directives: {
     dragscroll: dragscroll,
@@ -54,17 +56,18 @@ export default {
       type: Number,
       default: 10,
     },
+    processor: {
+      type: InputProcessor,
+      required: true,
+    },
   },
-  data: function() {
+  data: function () {
     return {
-      processor: null,
       cellSize: 2,
       dragscrollFix: new DragScrollClickFix(),
     };
   },
-  mounted() {
-    this.processor = new InputProcessor(this.data);
-  },
+  mounted() {},
   computed: {
     rowStyle() {
       return {
@@ -77,6 +80,7 @@ export default {
       };
     },
   },
+  watch: {},
   methods: {
     onScroll(e) {
       const step = 0.1;
@@ -84,8 +88,8 @@ export default {
       if (e.deltaY < 0) this.cellSize += step;
       else if (this.cellSize - step > 0) this.cellSize -= step;
     },
-    onCellInput(cell) {
-      this.processor.processInput(cell.position);
+    onCellInput(cell, updateOnly) {
+      this.processor.processInput(cell.position, updateOnly);
     },
     getCell(row, col) {
       return this.data && this.data[row] && this.data[row][col];
