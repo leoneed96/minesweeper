@@ -12,10 +12,14 @@
   </div>
 </template>
 <script>
+import timer from "../types/timer"
 export default {
   props: {
     mineRemains: {
       type: Number,
+    },
+    timer: {
+      type: timer,
     }
   },
   data: function() {
@@ -24,6 +28,12 @@ export default {
       timeCounter: 0,
       started: false
     };
+  },
+  watch: {
+    "timer.elapsed"(val){
+      if(val)
+        this.timeCounter = Math.round(val);
+    }
   },
   mounted() {
    
