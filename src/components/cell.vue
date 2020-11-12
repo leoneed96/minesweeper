@@ -9,14 +9,18 @@
     <div
       class="cell-content cell-content--closed"
       :style="cellStyle"
-      v-if="!cell.isOpened"
+      v-if="!cell.isOpened && !cell.isFlag"
+    ></div>
+    <div
+      class="cell-content cell-content--closed cell-content cell-content--closed--flag"
+      :style="cellStyle"
+      v-else-if="!cell.isOpened && cell.isFlag"
     ></div>
     <div
       class="cell-content cell-content--mine"
       :style="cellStyle"
       v-else-if="cell.type == 0"
     >
-      *
     </div>
     <div
       class="cell-content cell-content--island"
@@ -59,8 +63,8 @@ export default {
         "border-width": this.size / 8 + "rem",
         "font-size": this.size / 1.5 + "rem",
       };
-      if (this.cell.isFlag)
-        style["background-image"] = `url(${require("@/assets/flag.png")})`;
+      // if (this.cell.isFlag)
+      //   style["background-image"] = `url(/img/flag.png)`;
       return style;
     },
   },

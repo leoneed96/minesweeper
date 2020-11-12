@@ -1,10 +1,11 @@
 <template>
-  <div class="row">
+  <div class="row status-bar-container align-items-center ml-0 mr-0 mb-1">
     <div class="col-3">
       {{mineRemains}}
     </div>
     <div class="col-6">
-      <div @click="$emit('start-stop-click')">here comes the face</div>
+      <div class="face-btn" :class="faceBtnClass" @click="$emit('start-stop-click')">
+      </div>
     </div>
     <div class="col-3">
       {{timeCounter}}
@@ -12,6 +13,7 @@
   </div>
 </template>
 <script>
+import "../styles/status-bar.scss";
 import timer from "../types/timer"
 export default {
   props: {
@@ -20,6 +22,15 @@ export default {
     },
     timer: {
       type: timer,
+    },
+    dragging: {
+      type: Boolean,
+    }
+  },
+  computed: {
+    faceBtnClass(){
+      if(this.dragging)
+        return "face-btn--action"
     }
   },
   data: function() {

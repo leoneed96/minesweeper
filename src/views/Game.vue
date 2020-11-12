@@ -1,15 +1,17 @@
 <template>
-  <b-container>
+  <b-container class="game-container">
     <settings>settings</settings>
     <status-bar
       :mineRemains="processor.minesCount"
       :timer="timer"
+      :dragging="dragging"
       @start-stop-click="onStartStop"
     ></status-bar>
     <field
       :data="gameField"
       :processor="processor"
       @start-stop-click="onStartStop"
+      @onDrag="dragging = $event"
       :rowsCount="20"
       :colsCount="20"
     ></field>
@@ -34,6 +36,7 @@ export default {
     return {
       started: false,
       gameField: [],
+      dragging: false,
       processor: {
         minesCount: 0,
       },
@@ -60,3 +63,8 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.game-container{
+  border-color: #c0c0c0;
+}
+</style>

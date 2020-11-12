@@ -1,10 +1,10 @@
 <template>
   <div
-    class="field-container"
+    class="field-container pt-1"
     v-dragscroll.noright="true"
     @click.capture="(e) => dragscrollFix.onClickCapture(e)"
-    @dragscrollstart="dragscrollFix.onDragScrollStart()"
-    @dragscrollend="dragscrollFix.onDragScrollEnd()"
+    @dragscrollstart="onDragScrollStart"
+    @dragscrollend="onDragScrollEnd"
   >
     <b-container :style="containerStyle" @mousewheel="onScroll">
       <b-row
@@ -94,6 +94,14 @@ export default {
     getCell(row, col) {
       return this.data && this.data[row] && this.data[row][col];
     },
+    onDragScrollStart(){
+      this.dragscrollFix.onDragScrollStart();
+      this.$emit("onDrag", true);
+    },
+    onDragScrollEnd(){
+      this.dragscrollFix.onDragScrollEnd();
+      this.$emit("onDrag", false);
+    }
   },
 };
 </script>

@@ -1,0 +1,19 @@
+.status-bar-container{
+  background-color: #c0c0c0;
+  border-radius: 0.5rem;
+  border-top: #f4f4f4 2px solid;
+  border-left: #f4f4f4 2px solid;
+  border-bottom: #808080 2px solid;
+  border-right: #808080 2px solid;
+  // border-bottom-left-radius: 0.5rem;
+  .face-btn{
+    background-image: url('/img/face_normal.jpg');
+    background-size: cover;
+    width: 2.5rem;
+    height: 2.5rem;
+    margin-left: calc(50% - 1.25rem);
+    &--action{
+      background-image: url('/img/face_action.jpg');
+    }
+  }
+}

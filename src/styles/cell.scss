@@ -26,9 +26,16 @@
     border-bottom: #808080 solid;
     border-right: #808080 solid;
     background-size: cover;
+
+    &--flag{
+      background-image: url('/img/flag.png');
+    }
   }
-  &--flag{
-      background-image: "url(../asserts/flag.png)";
+  &--mine{
+    background-size: cover;
+    background-image: url('/img/mine_red.jpg');
+    width: 100%;
+    height: 100%;
   }
   &--num {
     font-weight: bold;

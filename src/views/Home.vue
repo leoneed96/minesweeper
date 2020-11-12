@@ -1,10 +1,7 @@
 <template>
-  <div style="background:red; width:300px;height:300px;overflow:auto" ref="div"  class="home"> 
-  <div style="background:red; width:3000px;height:3000px;overflow:auto" v-dragscroll
-  v-on:dragscrollmove="doSomething">
-  qwe
-  </div>
-    
+  <div>
+     <img class="img mr-1" src="/img/mine_red.jpg" />
+     <div style="background-image:'url(/img/mine_red.jpg)'"></div>
   </div>
 </template>
 
@@ -22,10 +19,7 @@ export default {
     HelloWorld
   },
   methods:{
-    doSomething(e){
-      console.log("dx",e.detail.deltaX, "dy", e.detail.deltaY);
-      this.$refs.div.scrollBy(e.detail.deltaX, e.detail.deltaY);
-    }
+
   }
 }
 </script>
