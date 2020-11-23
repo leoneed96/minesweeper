@@ -6,21 +6,24 @@ export default class Generator {
   constructor(
     rowCount: number,
     colCount: number,
-    minesCount: number | undefined
+    minesCount: number | undefined,
+    easyStart: boolean = false
   ) {
     this.rowCount = rowCount;
     this.colCount = colCount;
-
+    this.easyStart = easyStart;
+    debugger;
     this.minesCount =
-      minesCount ||
-      Math.round(this.rowCount * this.colCount * this.defaultMinesCoeff);
+      !!minesCount ? minesCount :
+        Math.round(this.rowCount * this.colCount * this.defaultMinesCoeff);
   }
 
+  easyStart: boolean = false;
   rowCount: number;
   colCount: number;
   minesCount: number;
   defaultMinesCoeff: number = 0.15625;
-  private utils: utils = new utils(); 
+  private utils: utils = new utils();
   private field: Array<Array<cell>> = new Array<Array<cell>>();
   private flatField: Array<cell> = new Array<cell>();
 
@@ -32,26 +35,7 @@ export default class Generator {
 
     return this.field;
   }
-  // todo: standalone 'fakeGenerator' ?
-  public getFakeField(){
-    for (let row = 0; row < this.rowCount; row++) {
-      for (let col = 0; col < this.colCount; col++) {
-        let curCell = new cell(new position(row, col));
-        curCell.type = CellType.fake;
-        this.flatField.push(curCell);
-      }
-    }
-    for (let row = 0; row < this.rowCount; row++) {
-      this.field.push([]);
-      for (let col = 0; col < this.colCount; col++) {
-        let cell = this.flatField.filter(
-          (x) => x.position.col == col && x.position.row == row
-        )[0];
-        this.field[row].push(cell);
-      }
-    }
-    return this.field;
-  }
+
   private initFlatFieldWithMines() {
     let mines = this.getMinesPositions();
     for (let row = 0; row < this.rowCount; row++) {
@@ -68,7 +52,7 @@ export default class Generator {
     if (
       this.flatField.length != this.rowCount * this.colCount ||
       this.flatField.filter((x) => x.type == CellType.mine).length !=
-        this.minesCount
+      this.minesCount
     )
       throw new Error("Flat field is not correctly initialized");
 

@@ -5,35 +5,52 @@ export default class InputProcessor {
     constructor(gameField: Array<Array<cell>>) {
         let helper = new Utils();
         this.flatField = helper.getFlatArray(gameField);
-        this.updateMinesCount();
+        this.updateState();
     }
     flatField: Array<cell>;
+    private lost: boolean = false;
+    public won: boolean = false;
     private utils: Utils = new Utils();
     public minesCount: number = 999;
     public processInput(pos: position, updateOnly: boolean = false) {
         if (updateOnly) {
-            this.updateMinesCount();
+            this.updateState();
             return;
         }
+
+        if (this.lost || this.won)
+            return;
+
         let cell = this.flatField.find(x => x.position.col == pos.col && x.position.row == pos.row);
         if (cell) {
             cell.isOpened = true;
             cell.isFlag = false;
 
-            if (cell.type == CellType.mine)
+            if (cell.type == CellType.mine) {
+                this.lost = true;
                 return false;
-            if (cell.type == CellType.number)
+            }
+            if (cell.type == CellType.number) {
+                this.updateState();
                 return true;
-            if (cell.type == CellType.island)
+            }
+            if (cell.type == CellType.island) {
                 this.openIsland(pos);
+                this.updateState();
+                return true;
+            }
         }
-        this.updateMinesCount();
 
     }
-    private updateMinesCount() {
+    private isCompleted() {
+        return this.flatField.filter(x => x.type === CellType.number).every(x => x.isOpened);
+    }
+    private updateState() {
         this.minesCount = this.flatField.filter(
             (x) => x.type == CellType.mine
         ).length - this.flatField.filter((x) => x.isFlag).length;
+
+        this.won = this.isCompleted();
     }
     private openIsland(pos: position) {
         var that = this;

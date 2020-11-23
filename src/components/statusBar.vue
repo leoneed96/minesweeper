@@ -15,6 +15,7 @@
 <script>
 import "../styles/status-bar.scss";
 import timer from "../types/timer"
+import constants from "../js/constants"
 export default {
   props: {
     mineRemains: {
@@ -23,13 +24,21 @@ export default {
     timer: {
       type: timer,
     },
+    status: {
+      type: String,
+      required: true
+    },
     dragging: {
       type: Boolean,
     }
   },
   computed: {
     faceBtnClass(){
-      if(this.dragging)
+      if(this.status === constants.GameStatus.LOST)
+        return 'face-btn--lost';
+      else if(this.status === constants.GameStatus.WIN)
+        return 'face-btn--win';
+      else if(this.dragging)
         return "face-btn--action"
     }
   },

@@ -15,5 +15,11 @@
     &--action{
       background-image: url('/img/face_action.jpg');
     }
+    &--lost{
+      background-image: url('/img/face_lose.jpg');
+    }
+    &--win{
+      background-image: url('/img/face_win.jpg');
+    }
   }
 }

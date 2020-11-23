@@ -89,7 +89,11 @@ export default {
       else if (this.cellSize - step > 0) this.cellSize -= step;
     },
     onCellInput(cell, updateOnly) {
-      this.processor.processInput(cell.position, updateOnly);
+      let result = this.processor.processInput(cell.position, updateOnly);
+      if(result === false)
+        this.$emit("mineHit");
+      if(this.processor.won)
+        this.$emit("won");
     },
     getCell(row, col) {
       return this.data && this.data[row] && this.data[row][col];
