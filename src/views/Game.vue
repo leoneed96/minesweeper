@@ -2,15 +2,17 @@
   <b-container class="game-container">
     <settings @settingsChanged="onSettingsChanged">settings</settings>
     <status-bar
-      :mineRemains="processor.minesCount"
+      :mineRemains="processor && processor.minesCount"
       :timer="timer"
       :dragging="dragging"
       :status="gameStatus"
       @start-stop-click="onStartStop"
     ></status-bar>
     <field
+      ref="field"
       :data="gameField"
       :processor="processor"
+      @startGame="onStart"
       @mineHit="onMineHit"
       @won="onWin"
       @start-stop-click="onStartStop"
@@ -38,33 +40,22 @@ export default {
   props: {},
   data: function () {
     return {
-      started: false,
       gameStatus: constants.GameStatus.NOT_STARTED,
       gameField: [],
       dragging: false,
-      processor: {
-        minesCount: 0,
-      },
+      processor: null,
       timer: new Timer(),
       fieldParams: {
         mines: 10,
         rows: 8,
         cols: 8,
       },
+      generator: null,
     };
   },
   methods: {
     onStartStop() {
-      if (this.timer) {
-        this.timer.Stop();
-      }
-      let generator = this.getGenerator();
-      this.gameStatus = constants.GameStatus.STARTED;
-      this.gameField = generator.getField();
-      this.processor = new InputProcessor(this.gameField);
-      this.timer = new Timer();
-      this.started = true;
-      this.timer.Start();
+      this.initClearField();
     },
     onMineHit() {
       this.timer.Stop();
@@ -76,18 +67,44 @@ export default {
     },
     onSettingsChanged(event) {
       this.fieldParams = event.data;
-      this.onStartStop();
+      this.updateGenerator();
+      this.initClearField();
     },
-    getGenerator(){
-      return new Generator(
+    onStart(cell) {
+      // TODO: show loading
+      this.generator.initializeField(cell);
+      this.processor = new InputProcessor(this.gameField);
+      this.gameStatus = constants.GameStatus.STARTED;
+      if (this.timer) {
+        this.timer.Stop();
+      }
+      this.timer = new Timer();
+
+      this.$nextTick(() => {
+        this.$refs.field.onCellInput(cell);
+        this.timer.Start();
+      });
+    },
+    initClearField() {
+      if (this.timer) {
+        this.timer.Stop();
+      }
+      this.timer = new Timer();
+      this.gameStatus = constants.GameStatus.STARTED;
+      this.processor = null;
+      this.updateGenerator();
+      this.gameField = this.generator.generateEmptyField();
+    },
+    updateGenerator() {
+      this.generator = new Generator(
         this.fieldParams.rows,
         this.fieldParams.cols,
-        this.fieldParams.mines,
+        this.fieldParams.mines
       );
-    }
+    },
   },
   mounted() {
-
+    this.initClearField();
   },
 };
 </script>

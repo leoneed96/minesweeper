@@ -12,7 +12,7 @@ export default class InputProcessor {
     public won: boolean = false;
     private utils: Utils = new Utils();
     public minesCount: number = 999;
-    public processInput(pos: position, updateOnly: boolean = false) {
+    public processInput(pos: position, updateOnly: boolean = false) : boolean | undefined {
         if (updateOnly) {
             this.updateState();
             return;

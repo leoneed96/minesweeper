@@ -57,8 +57,8 @@ export default {
       default: 10,
     },
     processor: {
-      type: InputProcessor,
-      required: true,
+      type: Object,
+      required: false,
     },
   },
   data: function () {
@@ -89,23 +89,25 @@ export default {
       else if (this.cellSize - step > 0) this.cellSize -= step;
     },
     onCellInput(cell, updateOnly) {
+      if (!this.processor) {
+        this.$emit("startGame", cell);
+        return;
+      }
       let result = this.processor.processInput(cell.position, updateOnly);
-      if(result === false)
-        this.$emit("mineHit");
-      if(this.processor.won)
-        this.$emit("won");
+      if (result === false) this.$emit("mineHit");
+      if (this.processor.won) this.$emit("won");
     },
     getCell(row, col) {
       return this.data && this.data[row] && this.data[row][col];
     },
-    onDragScrollStart(){
+    onDragScrollStart() {
       this.dragscrollFix.onDragScrollStart();
       this.$emit("onDrag", true);
     },
-    onDragScrollEnd(){
+    onDragScrollEnd() {
       this.dragscrollFix.onDragScrollEnd();
       this.$emit("onDrag", false);
-    }
+    },
   },
 };
 </script>

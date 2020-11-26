@@ -23,6 +23,7 @@
         <b-card class="mt-2" v-if="customModeSelected">
           <b-form-group label-cols-sm="3" label="Rows:">
             <b-form-input
+              type="number"
               :state="customInputState.rows"
               id="rows"
               v-model="modes[3].rows"
@@ -34,6 +35,7 @@
           </b-form-group>
           <b-form-group label-cols-sm="3" label="Cols:">
             <b-form-input
+              type="number"
               id="cols"
               :state="customInputState.cols"
               v-model="modes[3].cols"
@@ -45,6 +47,7 @@
           </b-form-group>
           <b-form-group label-cols-sm="3" label="Mines:">
             <b-form-input
+              type="number"
               id="mines"
               :state="customInputState.mines"
               v-model="modes[3].mines"

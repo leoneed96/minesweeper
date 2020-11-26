@@ -12,7 +12,6 @@ export default class Generator {
     this.rowCount = rowCount;
     this.colCount = colCount;
     this.easyStart = easyStart;
-    debugger;
     this.minesCount =
       !!minesCount ? minesCount :
         Math.round(this.rowCount * this.colCount * this.defaultMinesCoeff);
@@ -27,35 +26,42 @@ export default class Generator {
   private field: Array<Array<cell>> = new Array<Array<cell>>();
   private flatField: Array<cell> = new Array<cell>();
 
-  public getField() {
-    this.initFlatFieldWithMines();
+  public generateEmptyField() {
+    for (let row = 0; row < this.rowCount; row++) {
+      for (let col = 0; col < this.colCount; col++) {
+        let curCell = new cell(new position(row, col));
+        curCell.type = CellType.fake;
+        this.flatField.push(curCell);
+      }
+    }
+    this.setGameField(false);
+    return this.field;
+  }
+  public initializeField() {
+    this.initMines();
     this.initValues();
-
     this.setGameField();
 
     return this.field;
   }
 
-  private initFlatFieldWithMines() {
+  private initMines() {
     let mines = this.getMinesPositions();
-    for (let row = 0; row < this.rowCount; row++) {
-      for (let col = 0; col < this.colCount; col++) {
-        let curCell = new cell(new position(row, col));
-        if (mines.some((x) => x.row == row && x.col == col)) {
-          curCell.type = CellType.mine;
-        }
-        this.flatField.push(curCell);
-      }
-    }
+    mines.forEach(mine => {
+      let item = this.flatField.find(x => x.position.col == mine.col && x.position.row == mine.row);
+      if (item)
+        item.type = CellType.mine;
+    })
   }
-  private setGameField() {
+  private setGameField(check: boolean = true) {
     if (
-      this.flatField.length != this.rowCount * this.colCount ||
-      this.flatField.filter((x) => x.type == CellType.mine).length !=
-      this.minesCount
+      check && (
+        this.flatField.length != this.rowCount * this.colCount ||
+        this.flatField.filter((x) => x.type == CellType.mine).length !=
+        this.minesCount)
     )
       throw new Error("Flat field is not correctly initialized");
-
+    this.field = new Array<Array<cell>>();
     for (let row = 0; row < this.rowCount; row++) {
       this.field.push([]);
       for (let col = 0; col < this.colCount; col++) {
@@ -95,7 +101,6 @@ export default class Generator {
         result.push(pos);
       }
     } while (result.length != this.minesCount);
-
     return result;
   }
   private getRandom(max: number) {
