@@ -37,7 +37,10 @@ export default class Generator {
     this.setGameField(false);
     return this.field;
   }
-  public initializeField() {
+  public initializeField(startPoint: position, easyStart: boolean) {
+    if (easyStart)
+      this.initStartIsland(startPoint);
+
     this.initMines();
     this.initValues();
     this.setGameField();
@@ -75,7 +78,7 @@ export default class Generator {
 
   private initValues() {
     this.flatField.forEach((cell) => {
-      if (cell.type == CellType.mine) return;
+      if (cell.type !== CellType.fake) return;
       let neighbors = this.getNeighbors(cell.position.row, cell.position.col);
       let minedneighbors = neighbors.filter((x) => x.type == CellType.mine)
         .length;
@@ -91,20 +94,65 @@ export default class Generator {
     return this.flatField.filter(this.utils.getNeighborsPredicate(row, col));
   }
   private getMinesPositions(): Array<position> {
+    let availablePositions = this.getAvailableMinePositions();
+
+    if (availablePositions.length < this.minesCount)
+      throw "availablePositions.length < this.minesCount";
+
     let result = new Array<position>();
     do {
-      let pos = new position(
-        this.getRandom(this.rowCount),
-        this.getRandom(this.colCount)
-      );
-      if (!result.some((x) => x.col == pos.col && x.row == pos.row)) {
-        result.push(pos);
-      }
+      let rndVal = this.getRandomArrayElement(availablePositions);
+      availablePositions.splice(availablePositions.indexOf(rndVal), 1);
+      result.push(rndVal);
     } while (result.length != this.minesCount);
     return result;
   }
-  private getRandom(max: number) {
+  private initStartIsland(startPoint: position): void {
+    const areaSize = this.getStartIslandArea();
+    var flatField = this.flatField;
+    let setIsland = (point: position) => {
+      let startCell = flatField.find(x => x.position.col == point.col && x.position.row == point.row);
+      if (startCell)
+        startCell.type = CellType.island;
+    };
+    setIsland(startPoint);
+    let currentAreaSize = 1;
+    while (currentAreaSize != areaSize) {
+      let potencialIslands = new Array<cell>();
+      this.flatField.filter(x => x.type == CellType.island).forEach(item => {
+        let neighbors = this.getNeighbors(item.position.row, item.position.col).filter(x => x.type !== CellType.island);
+        potencialIslands = potencialIslands.concat(neighbors);
+      })
+      let neighborToOpen = this.getRandomArrayElement(potencialIslands);
+      setIsland(neighborToOpen.position);
+      currentAreaSize++;
+    }
+
+  }
+  private getStartIslandArea() {
+    const totalCells = this.flatField.length;
+    const freePart = 1 - (this.minesCount / totalCells);
+    const maxIslandPart = 0.2 * freePart;
+
+    const maxIslandArea = Math.round(totalCells * maxIslandPart);
+    const minIslandArea = 1;
+    const islandArea = this.getRandom(minIslandArea, maxIslandArea);
+
+    return islandArea;
+  }
+  private getAvailableMinePositions(): Array<position> {
+    return this.flatField.filter(x =>
+      x.type !== CellType.island &&
+      !this.getNeighbors(x.position.row, x.position.col).some(x => x.type == CellType.island))
+      .map(x => x.position);
+  }
+  private getRandom(max: number, min: number = 0) {
+    min = Math.ceil(min);
     max = Math.floor(max);
-    return Math.floor(Math.random() * max);
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+  private getRandomArrayElement<T>(arr: Array<T>) {
+    let index = this.getRandom(0, arr.length);
+    return arr[index];
   }
 }

@@ -67,12 +67,13 @@ export default {
     },
     onSettingsChanged(event) {
       this.fieldParams = event.data;
+      this.fieldParams.easyStart = event.easyStart;
       this.updateGenerator();
       this.initClearField();
     },
     onStart(cell) {
       // TODO: show loading
-      this.generator.initializeField(cell);
+      this.generator.initializeField(cell.position, this.fieldParams.easyStart);
       this.processor = new InputProcessor(this.gameField);
       this.gameStatus = constants.GameStatus.STARTED;
       if (this.timer) {
