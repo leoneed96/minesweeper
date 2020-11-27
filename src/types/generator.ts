@@ -132,7 +132,7 @@ export default class Generator {
   private getStartIslandArea() {
     const totalCells = this.flatField.length;
     const freePart = 1 - (this.minesCount / totalCells);
-    const maxIslandPart = 0.2 * freePart;
+    const maxIslandPart = 0.1 * freePart;
 
     const maxIslandArea = Math.round(totalCells * maxIslandPart);
     const minIslandArea = 1;
