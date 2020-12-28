@@ -1,4 +1,4 @@
-# minesweeper
+# vue-minesweeper
 Pure vue-ts minesweeper implementation
 ## Features
 - Customizable field: 3 classic pre-defined settings and custom row/columns/mines count field
